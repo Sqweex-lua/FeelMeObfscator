@@ -1,0 +1,48 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        build_type: [Release]
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Configure CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DFEELMEHAPPY_BUILD_EXAMPLES=ON -DFEELMEHAPPY_BUILD_TESTS=ON
+    
+    - name: Build
+      run: cmake --build build
+    
+    - name: Run Tests
+      run: |
+        cd build
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          .\unit_tests.exe
+        else
+          ./unit_tests
+        fi
+    
+    - name: Run Benchmarks
+      run: |
+        cd build
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          .\performance_tests.exe
+        else
+          ./performance_tests
+        fi
+    
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-${{ matrix.os }}-${{ matrix.build_type }}
+        path: build/
