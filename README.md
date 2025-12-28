@@ -28,3 +28,18 @@ int main() {
     
     return 0;
 }
+```
+## C++ Standards
+
+    C++17 (minimum)
+
+    C++20 (recommended)
+
+    C++23 (future)
+
+## Compiler Support
+
+GCC	7.0+	Full support
+Clang	6.0+	Full support
+MSVC	2017+	Full support
+ICC	19.0+	Partial support
